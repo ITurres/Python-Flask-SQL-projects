@@ -57,6 +57,7 @@ table td {
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 2rem 0.5rem;
   gap: 2rem;
 }
 
@@ -102,6 +103,25 @@ table td {
 .form__warning {
   font-size: 1rem;
   color: darkRed;
+}
+
+.delete-btn--holder {
+  margin: 0 auto;
+}
+
+.delete-btn {
+  font-size: 1rem;
+  padding: 0.2rem 0.3rem;
+  border-radius: 0.2rem;
+  background-color: var(--style-color-light-gold);
+  border: 1px solid var(--style-color-gold-1);
+  color: var(--style-color-light-dark-blue);
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: var(--style-color-gold-1);
+  border: 1px solid var(--style-color-light-dark-blue);
 }
 
 table {
