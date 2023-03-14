@@ -56,6 +56,7 @@
             <tr>
               <th>Name</th>
               <th>Birthday</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -63,11 +64,23 @@
             <tr>
               <td>{{ birthday.name }}</td>
               <td>{{ birthday.month }}/{{ birthday.day }}</td>
+              <td class="delete-btn--holder">
+                <form action="/delete" method="post">
+                  <input name="id" type="hidden" value="{{ birthday.id }}" />
+                  <button class="delete-btn" type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+              </td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
     </div>
+    <script
+      src="https://kit.fontawesome.com/5d25a44371.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
