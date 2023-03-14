@@ -1,0 +1,122 @@
+@import "variables/colors.css";
+
+body {
+  background-color: #f5f4f5;
+  color: #212529;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+  text-align: center;
+  width: 90%;
+}
+
+.header {
+  background: var(--style-color-gold-3) url("../images/birthday-bg.jpg");
+  background-position: top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #fff;
+  margin-bottom: 2rem;
+  padding: 2rem 1rem;
+  text-align: center;
+}
+
+.section-1,
+.section-2 {
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+}
+
+.header__title {
+  font-size: 48px;
+}
+
+.header__title,
+.section-1__title,
+.section-2__title,
+.form__input[type="text"],
+.form__warning,
+table th,
+table td {
+  font-family: "Montserrat", sans-serif;
+  color: var(--style-color-dark-blue);
+}
+
+.form__inputs--holder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.form__input[type="text"] {
+  border-radius: 0.5rem;
+  padding-left: 0.5rem;
+  line-height: 1.8;
+  font-size: 1rem;
+  width: 20%;
+  border: 2px solid var(--style-color-light-gold);
+  outline: none;
+}
+
+.form__input[type="text"]:hover {
+  background-color: #f3f2f2;
+  transition: color 2s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+.form__input[type="text"]:focus {
+  border: 3px solid var(--style-color-light-dark-blue);
+}
+
+.form__btn[type="submit"] {
+  background-color: var(--style-color-gold-1);
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 0.375rem 0.75rem;
+  margin: 1rem;
+  text-align: center;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.form__btn[type="submit"]:hover {
+  background-color: var(--style-color-gold-2);
+}
+
+.form__warning {
+  font-size: 1rem;
+  color: darkRed;
+}
+
+table {
+  background-color: transparent;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+table th,
+table td {
+  font-size: 1rem;
+  padding: 0.75rem;
+  vertical-align: middle;
+}
+
+tbody tr:nth-of-type(odd) {
+  background-color: var(--style-color-gold-3);
+}

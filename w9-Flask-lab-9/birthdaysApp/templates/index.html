@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../static/images/gift-icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link href="../static/styles/styles.css" rel="stylesheet" />
+    <title>Birthdays</title>
+  </head>
+  <body>
+    <div class="header">
+      <h1 class="header__title">Birthdays</h1>
+    </div>
+    <div class="container">
+      <div class="section-1">
+        <h2 class="section-1__title">Add a Birthday</h2>
+        <form action="/" method="post" class="section-1__form">
+          <div class="form__inputs--holder">
+            <input
+              class="form__input"
+              name="name"
+              autocomplete="off"
+              type="text"
+              placeholder="Name"
+            />
+            <input
+              class="form__input"
+              name="month"
+              autocomplete="off"
+              type="text"
+              placeholder="Month"
+            />
+            <input
+              class="form__input"
+              name="day"
+              autocomplete="off"
+              type="text"
+              placeholder="Day"
+            />
+          </div>
+          <button class="form__btn" type="submit">
+            &#127881; Add &#127881;
+          </button>
+        </form>
+        <p class="form__warning">{{ value_failure }}</p>
+      </div>
+      <div class="section-2">
+        <h2 class="section-2__title">All Birthdays</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Birthday</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for birthday in birthdays %}
+            <tr>
+              <td>{{ birthday.name }}</td>
+              <td>{{ birthday.month }}/{{ birthday.day }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
