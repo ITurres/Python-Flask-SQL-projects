@@ -46,6 +46,7 @@ body {
 .section-1__title,
 .section-2__title,
 .form__input[type="text"],
+.form__btn[type="submit"],
 .form__warning,
 table th,
 table td {
@@ -85,7 +86,7 @@ table td {
   border: 1px solid transparent;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.5;
   padding: 0.375rem 0.75rem;
   margin: 1rem;
@@ -105,11 +106,15 @@ table td {
   color: darkRed;
 }
 
-.delete-btn--holder {
-  margin: 0 auto;
+.action-btn--holder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.delete-btn {
+.delete-btn,
+.update-btn {
   font-size: 1rem;
   padding: 0.2rem 0.3rem;
   border-radius: 0.2rem;
@@ -119,7 +124,8 @@ table td {
   cursor: pointer;
 }
 
-.delete-btn:hover {
+.delete-btn:hover,
+.update-btn:hover {
   background-color: var(--style-color-gold-1);
   border: 1px solid var(--style-color-light-dark-blue);
 }
