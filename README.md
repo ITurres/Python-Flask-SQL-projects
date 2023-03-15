@@ -8,7 +8,7 @@
 
 <p align="center">A brief introduction of the Python, Flask, and SQL projects worked on during the course.</p>
 
-<p align="center">NOTE: the challenges' <strong style="color: darkRed">Names in red</strong> are links to each cs50 challenge page.</p>
+<p align="center">NOTE: the challenges' <strong style="color: darkRed">Names in red / blue</strong> are links to each cs50 challenge page.</p>
 
 ---
 
@@ -24,7 +24,7 @@
 
 - #### <a href="https://cs50.harvard.edu/x/2023/labs/9/" style="color: darkRed">Birthdays Web App</a>, a web application to keep track of friends’ birthdays.
 <div align="center">
-    <img alt="cs50 logo" src="readme-src/birthday-webapp-img.jpg" width="100%">
+    <img alt="birthdays web app" src="readme-src/birthday-webapp-img.JPG" width="100%">
 </div>
 
 ### w9 Problem Set 9:
