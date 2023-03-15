@@ -1,86 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="../static/images/gift-icon.png" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap"
-      rel="stylesheet"
-    />
-    <link href="../static/styles/styles.css" rel="stylesheet" />
-    <title>Birthdays</title>
-  </head>
-  <body>
-    <div class="header">
-      <h1 class="header__title">Birthdays</h1>
+{% extends "layout.html" %} {% block body %}
+<body>
+  <div class="header">
+    <h1 class="header__title">Birthdays</h1>
+  </div>
+  <div class="container">
+    <div class="section-1">
+      <h2 class="section-1__title">Add a Birthday</h2>
+      <form action="/" method="post" class="section-1__form">
+        <div class="form__inputs--holder">
+          <input
+            class="form__input"
+            name="name"
+            autocomplete="off"
+            type="text"
+            placeholder="Name"
+          />
+          <input
+            class="form__input"
+            name="month"
+            autocomplete="off"
+            type="text"
+            placeholder="Month"
+          />
+          <input
+            class="form__input"
+            name="day"
+            autocomplete="off"
+            type="text"
+            placeholder="Day"
+          />
+        </div>
+        <button class="form__btn" type="submit">&#127881; Add &#127881;</button>
+      </form>
+      <p class="form__warning">{{ value_failure }}</p>
     </div>
-    <div class="container">
-      <div class="section-1">
-        <h2 class="section-1__title">Add a Birthday</h2>
-        <form action="/" method="post" class="section-1__form">
-          <div class="form__inputs--holder">
-            <input
-              class="form__input"
-              name="name"
-              autocomplete="off"
-              type="text"
-              placeholder="Name"
-            />
-            <input
-              class="form__input"
-              name="month"
-              autocomplete="off"
-              type="text"
-              placeholder="Month"
-            />
-            <input
-              class="form__input"
-              name="day"
-              autocomplete="off"
-              type="text"
-              placeholder="Day"
-            />
-          </div>
-          <button class="form__btn" type="submit">
-            &#127881; Add &#127881;
-          </button>
-        </form>
-        <p class="form__warning">{{ value_failure }}</p>
-      </div>
-      <div class="section-2">
-        <h2 class="section-2__title">All Birthdays</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Birthday</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for birthday in birthdays %}
-            <tr>
-              <td>{{ birthday.name }}</td>
-              <td>{{ birthday.month }}/{{ birthday.day }}</td>
-              <td class="delete-btn--holder">
-                <form action="/delete" method="post">
-                  <input name="id" type="hidden" value="{{ birthday.id }}" />
-                  <button class="delete-btn" type="submit">
-                    <i class="fa-solid fa-trash"></i>
-                  </button>
-                </form>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    <div class="section-2">
+      <h2 class="section-2__title">All Birthdays</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Birthday</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for birthday in birthdays %}
+          <tr>
+            <td>{{ birthday.name }}</td>
+            <td>{{ birthday.month }}/{{ birthday.day }}</td>
+            <td class="action-btn--holder">
+              <form action="/to-update" method="post">
+                <input name="id" type="hidden" value="{{ birthday.id }}" />
+                <button class="update-btn" type="submit">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </button>
+              </form>
+              <form action="/delete" method="post">
+                <input name="id" type="hidden" value="{{ birthday.id }}" />
+                <button class="delete-btn" type="submit">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-    <script
-      src="https://kit.fontawesome.com/5d25a44371.js"
-      crossorigin="anonymous"
-    ></script>
-  </body>
-</html>
+  </div>
+  <script
+    src="https://kit.fontawesome.com/5d25a44371.js"
+    crossorigin="anonymous"
+  ></script>
+</body>
+{% endblock %}
