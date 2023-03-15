@@ -25,6 +25,7 @@ def after_request(response):
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
+        id = request.form.get("id")
         name = request.form.get("name")
         month = request.form.get("month")
         day = request.form.get("day")
@@ -36,6 +37,16 @@ def index():
             return render_template(
                 "index.html", value_failure="Only Integers as Month and Day"
             )
+
+        if id:
+            db.execute(
+                "UPDATE birthdays SET name = ?, month = ?, day = ? WHERE id = ?",
+                name,
+                month,
+                day,
+                id,
+            )
+            return redirect("/")
 
         if name.isalpha() and (month >= 1 and month <= 12) and (day >= 1 and day <= 31):
             db.execute(
@@ -52,7 +63,9 @@ def index():
 
     else:
         birthdays_data = db.execute("SELECT * FROM birthdays")
-        return render_template("index.html", birthdays=birthdays_data)
+        return render_template(
+            "index.html", webpage_title="Home-page", birthdays=birthdays_data
+        )
 
 
 @app.route("/delete", methods=["POST"])
@@ -61,3 +74,15 @@ def delete():
     if id:
         db.execute("DELETE FROM birthdays WHERE id == ?", id)
     return redirect("/")
+
+
+@app.route("/to-update", methods=["POST"])
+def to_update():
+    id = request.form.get("id")
+    if id:
+        birthdays_data = db.execute("SELECT * FROM birthdays WHERE id == ?", id)
+        return render_template(
+            "update-birthday.html",
+            webpage_title="Update-Birthday",
+            birthdays=birthdays_data,
+        )
