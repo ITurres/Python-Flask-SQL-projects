@@ -1,0 +1,43 @@
+{% extends "layout.html" %} {% block body %}
+<div class="header">
+  <h1 class="header__title">Birthdays</h1>
+</div>
+<div class="container">
+  <div class="section-1">
+    <h2 class="section-1__title">
+      Seems you want to update this Birthday...<br />go ahead!
+    </h2>
+    <form action="/" method="post" class="section-1__form">
+      <div class="form__inputs--holder">
+        <input name="id" type="hidden" value="{{ birthdays[0].id }}" />
+        <input
+          class="form__input"
+          name="name"
+          autocomplete="off"
+          type="text"
+          placeholder="Name"
+          value="{{ birthdays[0].name }}"
+        />
+        <input
+          class="form__input"
+          name="month"
+          autocomplete="off"
+          type="text"
+          placeholder="Month"
+          value="{{ birthdays[0].month }}"
+        />
+        <input
+          class="form__input"
+          name="day"
+          autocomplete="off"
+          type="text"
+          placeholder="Day"
+          value="{{ birthdays[0].day }}"
+        />
+      </div>
+      <button class="form__btn" type="submit">&#9989; Update &#9989;</button>
+    </form>
+    <p class="form__warning">{{ value_failure }}</p>
+  </div>
+</div>
+{% endblock %}
