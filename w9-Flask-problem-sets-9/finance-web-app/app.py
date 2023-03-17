@@ -8,7 +8,7 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookup, usd, check_username, check_symbol
+from helpers import apology, login_required, lookup, usd, check_username, check_symbol, get_user_cash
 
 # Configure application
 app = Flask(__name__)
@@ -42,7 +42,21 @@ def after_request(response):
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return apology("TODO")
+    current_user_id = session["user_id"]
+    user_stocks = db.execute(
+        "SELECT share_symbol, share_name, sum(total_shares) AS total_shares , share_price,sum(total_shares_value) AS total_shares_value FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
+        current_user_id)
+
+    user_total_share_value = 0
+    for user_stock in user_stocks:
+        user_total_share_value += float(user_stock['total_shares_value'])
+        user_stock['share_price'] = usd(user_stock['share_price'])
+        user_stock['total_shares_value'] = usd(
+            user_stock['total_shares_value'])
+
+    current_user_cash = get_user_cash(current_user_id)
+    user_total_cash = current_user_cash + user_total_share_value
+    return render_template("index.html", user_stocks=user_stocks, user_cash=usd(current_user_cash), total=usd(user_total_cash))
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -62,10 +76,7 @@ def buy():
             return apology("Must select shares higher than 0", 403)
 
         current_user_id = session["user_id"]
-        current_user_cash = db.execute(
-            "SELECT cash FROM users WHERE id = ?", current_user_id
-        )
-        current_user_cash = int(current_user_cash[0]["cash"])
+        current_user_cash = get_user_cash(current_user_id)
         # round to 2 decimals a float#
         # total_shares_value = decimal.Decimal(quote['price'] * shares).quantize(decimal.Decimal('0.00')) #no need
         total_shares_value = (quote['price'] * shares)
