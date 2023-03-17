@@ -1,0 +1,20 @@
+{% extends "layout.html" %} {% block title %} Quoted {% endblock %} {% block
+main %}
+<h1>{{ quote.name }} - Quote</h1>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Price</th>
+      <th scope="col">Symbol</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>{{ quote.name }}</td>
+      <td>{{ quote.price }}</td>
+      <td>{{ quote.symbol }}</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
