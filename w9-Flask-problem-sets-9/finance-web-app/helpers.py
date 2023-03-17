@@ -12,16 +12,26 @@ db = SQL("sqlite:///finance.db")
 
 def apology(message, code=400):
     """Render message as an apology to user."""
+
     def escape(s):
         """
         Escape special characters.
 
         https://github.com/jacebrowning/memegen#special-characters
         """
-        for old, new in [("-", "--"), (" ", "-"), ("_", "__"), ("?", "~q"),
-                         ("%", "~p"), ("#", "~h"), ("/", "~s"), ('\"', "''")]:
+        for old, new in [
+            ("-", "--"),
+            (" ", "-"),
+            ("_", "__"),
+            ("?", "~q"),
+            ("%", "~p"),
+            ("#", "~h"),
+            ("/", "~s"),
+            ('"', "''"),
+        ]:
             s = s.replace(old, new)
         return s
+
     return render_template("apology.html", top=code, bottom=escape(message)), code
 
 
@@ -31,11 +41,13 @@ def login_required(f):
 
     https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
     """
+
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get("user_id") is None:
             return redirect("/login")
         return f(*args, **kwargs)
+
     return decorated_function
 
 
@@ -57,7 +69,7 @@ def lookup(symbol):
         return {
             "name": quote["companyName"],
             "price": float(quote["latestPrice"]),
-            "symbol": quote["symbol"]
+            "symbol": quote["symbol"],
         }
     except (KeyError, TypeError, ValueError):
         return None
@@ -69,8 +81,18 @@ def usd(value):
 
 
 def check_username(username):
-    user_name = db.execute(
-        "SELECT username FROM users WHERE username = ?", username)
+    user_name = db.execute("SELECT username FROM users WHERE username = ?", username)
     if user_name:
         return True
     return False
+
+
+def check_symbol(symbol):
+    if not symbol:
+        return 1  # apology
+
+    quote = lookup(symbol)
+    if not quote:
+        return 2  # apology
+
+    return quote
