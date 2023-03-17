@@ -1,0 +1,35 @@
+{% extends "layout.html" %} {% block title %} Quoted {% endblock %} {% block
+main %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th class="text-start">Symbol</th>
+      <th class="text-start">Name</th>
+      <th class="text-end">Shares</th>
+      <th class="text-end">Price</th>
+      <th class="text-end">TOTAL</th>
+    </tr>
+  </thead>
+  {% for user_stock in user_stocks %}
+  <tbody>
+    <tr>
+      <td class="text-start">{{ user_stock.share_symbol }}</td>
+      <td class="text-start">{{ user_stock.share_name }}</td>
+      <td class="text-end">{{ user_stock.total_shares }}</td>
+      <td class="text-end">{{ user_stock.share_price }}</td>
+      <td class="text-end">{{ user_stock.total_shares_value }}</td>
+    </tr>
+  </tbody>
+  {% endfor %}
+  <tfoot>
+    <tr>
+      <td class="border-0 fw-bold text-end" colspan="4">Cash</td>
+      <td class="border-0 text-end">{{ user_cash }}</td>
+    </tr>
+    <tr>
+      <td class="border-0 fw-bold text-end" colspan="4">TOTAL</td>
+      <td class="border-0 w-bold text-end">{{ total }}</td>
+    </tr>
+  </tfoot>
+</table>
+{% endblock %}
