@@ -15,6 +15,7 @@ CREATE TABLE user_transactions (
     share_price NUMERIC NOT NULL,
     share_symbol TEXT NOT NULL,
     total_shares INTEGER NOT NULL,
+    total_shares_value NUMERIC NOT NULL,
     transaction_type TEXT NOT NULL,
     date_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id)
