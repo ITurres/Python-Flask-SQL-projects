@@ -81,7 +81,8 @@ def usd(value):
 
 
 def check_username(username):
-    user_name = db.execute("SELECT username FROM users WHERE username = ?", username)
+    user_name = db.execute(
+        "SELECT username FROM users WHERE username = ?", username)
     if user_name:
         return True
     return False
@@ -96,3 +97,9 @@ def check_symbol(symbol):
         return 2  # apology
 
     return quote
+
+
+def get_user_cash(user_id):
+    return float(db.execute(
+        "SELECT cash FROM users WHERE id = ?", user_id
+    )[0]['cash'])
