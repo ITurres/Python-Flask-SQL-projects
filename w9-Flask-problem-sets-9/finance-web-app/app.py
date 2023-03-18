@@ -5,7 +5,7 @@ import os
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
-from tempfile import mkdtemp
+# from tempfile import mkdtemp
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import apology, login_required, lookup, usd, check_username, check_symbol, get_user_cash
@@ -103,7 +103,15 @@ def buy():
 @login_required
 def history():
     """Show history of transactions"""
-    return apology("TODO")
+    current_user_id = session["user_id"]
+    user_stocks = db.execute(
+        "SELECT share_symbol, share_name, total_shares, share_price, transaction_type, date_time FROM user_transactions WHERE user_id = ?",
+        current_user_id)
+
+    for user_stock in user_stocks:
+        user_stock['share_price'] = usd(user_stock['share_price'])
+
+    return render_template("history.html", user_stocks=user_stocks)
 
 
 @app.route("/login", methods=["GET", "POST"])
