@@ -41,10 +41,10 @@ def after_request(response):
 @app.route("/")
 @login_required
 def index():
-    """Show portfolio of stocks"""
+    """ Show portfolio of stocks"""
     current_user_id = session["user_id"]
     user_stocks = db.execute(
-        "SELECT share_symbol, share_name, sum(total_shares) AS total_shares , share_price,sum(total_shares_value) AS total_shares_value FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
+        "SELECT share_symbol, share_name, SUM(total_shares) AS total_shares , share_price, SUM(total_shares_value) AS total_shares_value FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
         current_user_id)
 
     user_total_share_value = 0
@@ -214,4 +214,42 @@ def register():
 @login_required
 def sell():
     """Sell shares of stock"""
-    return apology("TODO")
+    current_user_id = session["user_id"]
+
+    if request.method == "POST":
+        symbol = request.form.get("symbol")
+        shares = request.form.get("shares")
+        shares = int(shares)
+        user_shares = db.execute(
+            "SELECT SUM(total_shares) AS total_shares FROM user_transactions WHERE user_id = ? AND share_symbol = ?",
+            current_user_id, symbol)[0]['total_shares']
+
+        if not user_shares:
+            return apology("User does not own such stock Symbol.")
+
+        if shares < 1:
+            return apology("Must select shares higher than 0.", 403)
+        elif shares > user_shares:
+            return apology("Sorry, seems you don't have enough shares to sell.")
+
+        quote = check_symbol(symbol)
+        current_user_cash = get_user_cash(current_user_id)
+        ## START TRANSACTION##
+        shares_sold = int(f"-{shares}")
+        total_shares_value = (quote['price'] * shares)
+
+        db.execute(
+            "INSERT INTO user_transactions(user_id ,share_name, share_price, share_symbol, total_shares, total_shares_value, transaction_type) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            current_user_id, quote['name'], quote['price'], quote['symbol'], shares_sold, total_shares_value, "SELL")
+
+        total_shares_sold_value = (quote['price'] * shares)
+        current_user_cash += total_shares_sold_value
+        db.execute("UPDATE users SET cash = ? WHERE id = ?",
+                   current_user_cash, current_user_id)
+
+        return redirect("/")
+    else:
+        user_stock_symbols = db.execute(
+            "SELECT share_symbol FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
+            current_user_id)
+        return render_template("sell.html", user_stock_symbols=user_stock_symbols)
