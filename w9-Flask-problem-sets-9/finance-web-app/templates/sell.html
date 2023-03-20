@@ -4,11 +4,11 @@
   <div class="mb-3">
     <select name="symbol">
       <option value="symbol" disabled selected>Symbol</option>
-      {% for symbol in user_stock_symbols %}
+      {% for symbol in user_stock_symbols %} {% if symbol.total_shares != 0 %}
       <option value="{{ symbol.share_symbol }}">
         {{ symbol.share_symbol }}
       </option>
-      {% endfor %}
+      {% endif %} {% endfor %}
     </select>
   </div>
   <div class="mb-3">
