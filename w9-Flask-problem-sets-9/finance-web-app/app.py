@@ -44,19 +44,17 @@ def index():
     """ Show portfolio of stocks"""
     current_user_id = session["user_id"]
     user_stocks = db.execute(
-        "SELECT share_symbol, share_name, SUM(total_shares) AS total_shares , share_price, SUM(total_shares_value) AS total_shares_value FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
+        "SELECT share_symbol, share_name, SUM(total_shares) AS total_shares, share_price FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
         current_user_id)
 
     user_total_share_value = 0
     for user_stock in user_stocks:
-        user_total_share_value += float(user_stock['total_shares_value'])
-        user_stock['share_price'] = usd(user_stock['share_price'])
-        user_stock['total_shares_value'] = usd(
-            user_stock['total_shares_value'])
+        user_total_share_value += float(
+            user_stock['share_price'] * user_stock['total_shares'])
 
     current_user_cash = get_user_cash(current_user_id)
     user_total_cash = current_user_cash + user_total_share_value
-    return render_template("index.html", user_stocks=user_stocks, user_cash=usd(current_user_cash), total=usd(user_total_cash))
+    return render_template("index.html", user_stocks=user_stocks, user_cash=usd(current_user_cash), total=usd(user_total_cash), usd=usd)
 
 
 @app.route("/buy", methods=["GET", "POST"])
@@ -80,13 +78,12 @@ def buy():
         # round to 2 decimals a float#
         # total_shares_value = decimal.Decimal(quote['price'] * shares).quantize(decimal.Decimal('0.00')) #no need
         total_shares_value = (quote['price'] * shares)
-
         ## START TRANSACTION##
         if current_user_cash >= total_shares_value:
             # purchase_timestamp = datetime.datetime.now() #no need
             db.execute(
-                "INSERT INTO user_transactions(user_id ,share_name, share_price, share_symbol, total_shares, total_shares_value, transaction_type) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                current_user_id, quote['name'], quote['price'], quote['symbol'], shares, total_shares_value, "BUY")
+                "INSERT INTO user_transactions(user_id ,share_name, share_price, share_symbol, total_shares, transaction_type) VALUES (?, ?, ?, ?, ?, ?)",
+                current_user_id, quote['name'], quote['price'], quote['symbol'], shares, "BUY")
 
             current_user_cash -= total_shares_value
             db.execute("UPDATE users SET cash = ? WHERE id = ?",
@@ -242,22 +239,19 @@ def sell():
 
         quote = check_symbol(symbol)
         current_user_cash = get_user_cash(current_user_id)
+
         ## START TRANSACTION##
-        shares_sold = int(f"-{shares}")
-        total_shares_value = (quote['price'] * shares)
-
         db.execute(
-            "INSERT INTO user_transactions(user_id ,share_name, share_price, share_symbol, total_shares, total_shares_value, transaction_type) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            current_user_id, quote['name'], quote['price'], quote['symbol'], shares_sold, total_shares_value, "SELL")
+            "INSERT INTO user_transactions(user_id ,share_name, share_price, share_symbol, total_shares, transaction_type) VALUES (?, ?, ?, ?, ?, ?)",
+            current_user_id, quote['name'], quote['price'], quote['symbol'], -shares, "SELL")
 
-        total_shares_sold_value = (quote['price'] * shares)
-        current_user_cash += total_shares_sold_value
+        current_user_cash += (quote['price'] * shares)
         db.execute("UPDATE users SET cash = ? WHERE id = ?",
                    current_user_cash, current_user_id)
 
         return redirect("/")
     else:
         user_stock_symbols = db.execute(
-            "SELECT share_symbol FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
+            "SELECT share_symbol, SUM(total_shares) AS total_shares FROM user_transactions WHERE user_id = ? GROUP BY share_symbol",
             current_user_id)
         return render_template("sell.html", user_stock_symbols=user_stock_symbols)
