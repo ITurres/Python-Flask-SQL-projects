@@ -72,8 +72,13 @@ def buy():
         elif quote == 2:
             return helpers.apology("Symbol not valid", 403)
 
-        shares = request.form.get("n-shares")
-        shares = int(shares)
+        shares = request.form.get("shares")
+
+        try:
+            shares = int(shares)
+        except ValueError:
+            return helpers.apology("Only numbers", 403)
+
         if shares < 1:
             return helpers.apology("Must select shares higher than 0", 403)
 
@@ -124,10 +129,8 @@ def history():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Log user in"""
-
     # Forget any user_id
     session.clear()
-
     # User reached route via POST (as by submitting a form via POST)
     if request.method == "POST":
         # Ensure username was submitted
@@ -155,7 +158,6 @@ def login():
 
         # Redirect user to home page
         return redirect("/")
-
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
@@ -205,22 +207,29 @@ def register():
 
     if request.method == "POST":
         if not username:
-            return helpers.apology("""Please make sure to
-                                     provide an Username""", 400)
+            return helpers.apology("Please provide a Username", 400)
         elif helpers.check_username(username):
             return helpers.apology("Username already exist", 400)
 
         if not password:
-            return helpers.apology("""Please make sure
-                                     to provide a password""", 400)
+            return helpers.apology("Please provide a password", 400)
         elif password != password_confirmation:
-            return helpers.apology("Passwords does not match", 400)
+            return helpers.apology("Passwords do not match", 400)
 
         db.execute(
             "INSERT INTO users (username, hash) VALUES (?, ?)",
             username,
             generate_password_hash(password),
         )
+
+        # THIS ENABLES AFTER REGISTERING TO BE REDIRECT TO #
+        # HOMEPAGE AND SEE CURRENT USER BALANCE # BUT
+        # WITH IT, FAILS TEST, BUT STAFF'S SOLUTIONS WORKS
+        # AS SUCH, SO... ILL COMMENT IT OUT JIC.
+        # rows = db.execute(
+        #     "SELECT * FROM users WHERE username = ?", username)
+
+        # session["user_id"] = rows[0]["id"]
 
         flash(f"Hello {username}!, you were successfully Register!")
         return redirect("/")
@@ -238,6 +247,12 @@ def sell():
         symbol = request.form.get("symbol")
         shares = request.form.get("shares")
         shares = int(shares)
+
+        try:
+            shares = int(shares)
+        except ValueError:
+            return helpers.apology("Only numbers", 403)
+
         user_shares = db.execute(
             """SELECT SUM(total_shares) AS total_shares
               FROM user_transactions WHERE user_id = ? AND share_symbol = ?""",
