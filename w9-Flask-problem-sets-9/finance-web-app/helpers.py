@@ -1,13 +1,10 @@
 import os
 
-from cs50 import SQL
 import requests
 import urllib.parse
 
 from flask import redirect, render_template, session
 from functools import wraps
-
-db = SQL("sqlite:///finance.db")
 
 
 def apology(message, code=400):
