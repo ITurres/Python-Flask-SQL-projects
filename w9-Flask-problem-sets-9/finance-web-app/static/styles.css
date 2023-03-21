@@ -35,3 +35,15 @@ nav .navbar-brand .green {
   border-radius: 0.375rem;
   cursor: pointer;
 }
+
+.current-balance--wrapper {
+  padding: 1rem;
+}
+
+.current-balance-header {
+  font-size: 1.1rem;
+}
+
+.current-balance.amount {
+  font-weight: 600;
+}
