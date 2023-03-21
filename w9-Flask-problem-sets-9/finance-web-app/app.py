@@ -39,9 +39,11 @@ def check_username(username):
 
 
 def get_user_cash(user_id):
-    return float(db.execute(
-        "SELECT cash FROM users WHERE id = ?", user_id
-    )[0]['cash'])
+    user_id_check = db.execute("SELECT id FROM users WHERE id = ?", user_id)
+    if user_id_check:
+        return float(db.execute("SELECT cash FROM users WHERE id = ?", user_id)[0]['cash'])
+    else:
+        return 0
 
 
 @app.after_request
