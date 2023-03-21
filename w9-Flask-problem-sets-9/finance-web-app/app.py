@@ -1,3 +1,4 @@
+# import flask
 import os
 # import datetime
 # import decimal
@@ -225,11 +226,12 @@ def register():
         # THIS ENABLES AFTER REGISTERING TO BE REDIRECT TO #
         # HOMEPAGE AND SEE CURRENT USER BALANCE # BUT
         # WITH IT, FAILS TEST, BUT STAFF'S SOLUTIONS WORKS
-        # AS SUCH, SO... ILL COMMENT IT OUT JIC.
-        # rows = db.execute(
-        #     "SELECT * FROM users WHERE username = ?", username)
+        # AS SUCH, SO... ILL COMMENT IT OUT FOR TEST.
+        # UNCOMMENTED FOR DEPLOY
+        rows = db.execute(
+            "SELECT * FROM users WHERE username = ?", username)
 
-        # session["user_id"] = rows[0]["id"]
+        session["user_id"] = rows[0]["id"]
 
         flash(f"Hello {username}!, you were successfully Register!")
         return redirect("/")
@@ -246,7 +248,6 @@ def sell():
     if request.method == "POST":
         symbol = request.form.get("symbol")
         shares = request.form.get("shares")
-        shares = int(shares)
 
         try:
             shares = int(shares)
@@ -292,3 +293,49 @@ def sell():
             current_user_id)
         return render_template("sell.html",
                                user_stock_symbols=user_stock_symbols)
+
+
+@app.route("/add-cash", methods=["GET", "POST"])
+@helpers.login_required
+def add_cash():
+    current_user_id = session["user_id"]
+    if request.method == "POST":
+
+        cash_requested = request.form.get("cash-requested")
+
+        try:
+            cash_requested = int(cash_requested)
+        except ValueError:
+            return helpers.apology("Only numbers and Integers", 403)
+
+        if cash_requested < 1:
+            return helpers.apology("Must select an amount higher than 0.", 403)
+        elif cash_requested > 10000:
+            return helpers.apology("""Must select an amount
+                                      lower than 1.000.""", 403)
+
+        db.execute(
+            """UPDATE users SET cash = (
+                SELECT cash FROM users WHERE id = ?
+                ) + ? WHERE id = ?""",
+            current_user_id, cash_requested, current_user_id)
+
+        none_value = "-"
+        db.execute(
+            """INSERT INTO user_transactions(user_id ,share_name,
+                   share_price, share_symbol, total_shares,
+                   transaction_type) VALUES (?, ?, ?, ?, ?, ?)""",
+            current_user_id, none_value, cash_requested,
+            none_value, none_value, "ADD-CASH")
+
+        flash(f"You added {helpers.usd(cash_requested)} to your account.")
+
+        return redirect("/")
+    else:
+        user_current_cash = db.execute("SELECT cash FROM users WHERE id = ?",
+                                       current_user_id)[0]['cash']
+        return render_template("add-cash.html",
+                               user_current_cash=helpers.usd(user_current_cash))
+
+
+# print("flask.__version__ = ", flask.__version__)

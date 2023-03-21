@@ -1,0 +1,22 @@
+{% extends "layout.html" %} {% block title %} Add cash {% endblock %} {% block
+main %}
+<div class="current-balance--wrapper">
+  <p class="current-balance-header">Your current balance</p>
+  <p class="current-balance amount">{{ user_current_cash }}</p>
+</div>
+<form action="/add-cash" method="post">
+  <div class="mb-3">
+    <input
+      autocomplete="off"
+      autofocus
+      class="form-control mx-auto w-auto"
+      name="cash-requested"
+      placeholder="$"
+      type="number"
+      min="1"
+      max="10000"
+    />
+  </div>
+  <button class="btn btn-primary" type="submit">Add amount</button>
+</form>
+{% endblock %}
