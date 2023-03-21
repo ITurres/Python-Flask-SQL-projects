@@ -1,3 +1,4 @@
+flask==2.2.3
 cs50
 Flask
 Flask-Session
