@@ -30,6 +30,20 @@ if not os.environ.get("API_KEY"):
     raise RuntimeError("API_KEY not set")
 
 
+def check_username(username):
+    user_name = db.execute(
+        "SELECT username FROM users WHERE username = ?", username)
+    if user_name:
+        return True
+    return False
+
+
+def get_user_cash(user_id):
+    return float(db.execute(
+        "SELECT cash FROM users WHERE id = ?", user_id
+    )[0]['cash'])
+
+
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -55,7 +69,8 @@ def index():
         user_total_share_value += float(
             user_stock['share_price'] * user_stock['total_shares'])
 
-    current_user_cash = helpers.get_user_cash(current_user_id)
+    current_user_cash = get_user_cash(current_user_id)
+
     user_total_cash = current_user_cash + user_total_share_value
     return render_template("index.html", user_stocks=user_stocks,
                            user_cash=helpers.usd(current_user_cash),
@@ -69,22 +84,22 @@ def buy():
     if request.method == "POST":
         quote = helpers.check_symbol(request.form.get("symbol"))
         if quote == 1:
-            return helpers.apology("Please introduce a symbol", 403)
+            return helpers.apology("Please introduce a symbol", 400)
         elif quote == 2:
-            return helpers.apology("Symbol not valid", 403)
+            return helpers.apology("Symbol not valid", 400)
 
         shares = request.form.get("shares")
 
         try:
             shares = int(shares)
         except ValueError:
-            return helpers.apology("Only numbers", 403)
+            return helpers.apology("Only numbers", 400)
 
         if shares < 1:
-            return helpers.apology("Must select shares higher than 0", 403)
+            return helpers.apology("Must select shares higher than 0", 400)
 
         current_user_id = session["user_id"]
-        current_user_cash = helpers.get_user_cash(current_user_id)
+        current_user_cash = get_user_cash(current_user_id)
         # round to 2 decimals a float#
         total_shares_value = (quote['price'] * shares)
         # START TRANSACTION#
@@ -182,9 +197,9 @@ def quote():
         quote = helpers.check_symbol(request.form.get("symbol"))
 
         if quote == 1:
-            return helpers.apology("Please introduce a symbol", 403)
+            return helpers.apology("Please introduce a symbol", 400)
         elif quote == 2:
-            return helpers.apology("Symbol not valid", 403)
+            return helpers.apology("Symbol not valid", 400)
 
         quote.update(
             {
@@ -209,7 +224,7 @@ def register():
     if request.method == "POST":
         if not username:
             return helpers.apology("Please provide a Username", 400)
-        elif helpers.check_username(username):
+        elif check_username(username):
             return helpers.apology("Username already exist", 400)
 
         if not password:
@@ -224,14 +239,12 @@ def register():
         )
 
         # THIS ENABLES AFTER REGISTERING TO BE REDIRECT TO #
-        # HOMEPAGE AND SEE CURRENT USER BALANCE # BUT
-        # WITH IT, FAILS TEST, BUT STAFF'S SOLUTIONS WORKS
-        # AS SUCH, SO... ILL COMMENT IT OUT FOR TEST.
-        # UNCOMMENTED FOR DEPLOY
+        # HOMEPAGE AND SEE CURRENT USER BALANCE
         rows = db.execute(
             "SELECT * FROM users WHERE username = ?", username)
 
         session["user_id"] = rows[0]["id"]
+        # #
 
         flash(f"Hello {username}!, you were successfully Register!")
         return redirect("/")
@@ -269,7 +282,7 @@ def sell():
                                      have enough shares to sell.""")
 
         quote = helpers.check_symbol(symbol)
-        current_user_cash = helpers.get_user_cash(current_user_id)
+        current_user_cash = get_user_cash(current_user_id)
 
         # START TRANSACTION#
         db.execute(
@@ -332,8 +345,7 @@ def add_cash():
 
         return redirect("/")
     else:
-        user_current_cash = db.execute("SELECT cash FROM users WHERE id = ?",
-                                       current_user_id)[0]['cash']
+        user_current_cash = get_user_cash(current_user_id)
         return render_template("add-cash.html",
                                user_current_cash=helpers.usd(user_current_cash))
 
