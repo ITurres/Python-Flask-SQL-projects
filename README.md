@@ -23,12 +23,14 @@
 ### w9 Lab 9:
 
 - #### <a href="https://cs50.harvard.edu/x/2023/labs/9/" style="color: darkRed">Birthdays Web App</a>, a web application to keep track of friends’ birthdays.
+
   - #### The app lets you:
   - Add new dada.
   - Modify existing data.
   - Delete data.
 
-https://user-images.githubusercontent.com/100724715/228059546-6ba6cd74-0b14-469d-b1a4-82245765b637.mp4
+- #### Preview:
+  https://user-images.githubusercontent.com/100724715/228059546-6ba6cd74-0b14-469d-b1a4-82245765b637.mp4
 
 ### w9 Problem Set 9:
 
@@ -42,6 +44,7 @@ https://user-images.githubusercontent.com/100724715/228059546-6ba6cd74-0b14-469d
   - Save transaction history.
   - Add more cash to account.
 
-https://user-images.githubusercontent.com/100724715/227956181-d1a66108-cb17-4567-9f86-965b0806b536.mp4
+- #### Preview:
+  https://user-images.githubusercontent.com/100724715/227956181-d1a66108-cb17-4567-9f86-965b0806b536.mp4
 
 ---
